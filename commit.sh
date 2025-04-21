@@ -92,5 +92,4 @@ else
     echo "❌ Commit cancelled."
 fi
 
-# Final pause to see the result before returning to normal screen
-sleep 1.5
+sleep 0.5
