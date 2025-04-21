@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Function to clean up when script exits
 cleanup() {
     # Return from alternate screen
     tput rmcup
@@ -24,8 +25,10 @@ if ! git rev-parse --is-inside-work-tree &> /dev/null; then
     exit 1
 fi
 
-# Get list of changed files
-changed_files=$(git status --porcelain | awk '{print $2}')
+# Get list of changed files including those in nested directories
+# Using a different approach to parse git status output
+changed_files=$(git status -s | sed 's/^...//')
+
 if [ -z "$changed_files" ]; then
     echo "No changed files to commit."
     exit 0
@@ -92,5 +95,4 @@ else
     echo "❌ Commit cancelled."
 fi
 
-# Final pause to see the result before returning to normal screen
-sleep 1.5
+# Final paus
