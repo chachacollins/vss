@@ -33,8 +33,8 @@ fi
 
 # Clear screen before each major step
 clear
-echo "📂 Selecting files for commit..."
-selected_files=$(echo "$changed_files" | gum choose --height 15 --no-limit)
+echo "📂 Selecting files for commit... (type to search, Tab to select, Enter to confirm)"
+selected_files=$(echo "$changed_files" | gum filter --no-limit --height 15 --placeholder "Search files...")
 
 if [ -z "$selected_files" ]; then
     echo "No files selected. Exiting."
@@ -47,7 +47,7 @@ echo "$selected_files" | xargs git add
 # Clear screen before commit type selection
 clear
 echo "🏷️ Select commit type:"
-commit_type=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
+commit_type=$(echo -e "fix\nfeat\ndocs\nstyle\nrefactor\ntest\nchore\nrevert" | gum filter --height 10 --limit 1 --placeholder "Search commit types...")
 
 # Clear screen before summary input
 clear
@@ -92,4 +92,5 @@ else
     echo "❌ Commit cancelled."
 fi
 
-sleep 1
+# Final pause to see the result before returning to normal screen
+sleep 1.5
