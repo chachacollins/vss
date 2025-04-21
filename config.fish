@@ -22,7 +22,7 @@ abbr nxd "nix develop"
 abbr nxf "nix flake"
 abbr gta "git add"
 abbr gtc "git commit -m"
-abbr gtp "git pull"
+abbr gtp "git push"
 abbr com "commit"
 
 
