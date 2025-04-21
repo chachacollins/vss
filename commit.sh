@@ -13,6 +13,11 @@ cleanup() {
 # Set up trap to ensure cleanup happens even if script is interrupted
 trap cleanup EXIT INT TERM
 
+if ! git rev-parse --is-inside-work-tree &> /dev/null; then
+    echo "Error: Not inside a git repository."
+    exit 1
+fi
+
 # Hide cursor
 tput civis
 # Save current screen and switch to alternate screen
@@ -20,10 +25,6 @@ tput smcup
 # Enable character-by-character input mode
 stty -echo
 
-if ! git rev-parse --is-inside-work-tree &> /dev/null; then
-    echo "Error: Not inside a git repository."
-    exit 1
-fi
 
 # Automatically add deleted files to staging
 echo "Auto-adding deleted files to staging..."
