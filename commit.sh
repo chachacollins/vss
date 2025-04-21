@@ -25,27 +25,35 @@ if ! git rev-parse --is-inside-work-tree &> /dev/null; then
     exit 1
 fi
 
-# Get list of changed files including those in nested directories
-# Using a different approach to parse git status output
-changed_files=$(git status -s | sed 's/^...//')
+# Automatically add deleted files to staging
+echo "Auto-adding deleted files to staging..."
+git ls-files --deleted | xargs -r git rm
+
+# Get remaining files that need manual selection
+changed_files=$(git status -s | grep -v "^D" | sed 's/^...//')
 
 if [ -z "$changed_files" ]; then
-    echo "No changed files to commit."
-    exit 0
+    echo "No additional files to commit."
+    echo "Only deleted files will be committed."
+else
+    # Clear screen before each major step
+    clear
+    echo "📂 Selecting files for commit... (type to search, Tab to select, Enter to confirm)"
+    selected_files=$(echo "$changed_files" | gum filter --no-limit --height 15 --placeholder "Search files...")
+
+    if [ -z "$selected_files" ]; then
+        echo "No additional files selected."
+    else
+        # Add the selected files to staging
+        echo "$selected_files" | xargs git add
+    fi
 fi
 
-# Clear screen before each major step
-clear
-echo "📂 Selecting files for commit... (type to search, Tab to select, Enter to confirm)"
-selected_files=$(echo "$changed_files" | gum filter --no-limit --height 15 --placeholder "Search files...")
-
-if [ -z "$selected_files" ]; then
-    echo "No files selected. Exiting."
+# Check if there are any staged changes
+if [ -z "$(git diff --cached --name-only)" ]; then
+    echo "No files staged for commit. Exiting."
     exit 0
 fi
-
-# Add the selected files to staging
-echo "$selected_files" | xargs git add
 
 # Clear screen before commit type selection
 clear
@@ -82,7 +90,7 @@ clear
 echo "🔍 Review your commit:"
 echo "------------------------------"
 echo "Files to be committed:"
-echo "$selected_files" | sed 's/^/- /'
+git diff --cached --name-status | sed 's/^A/➕ Added:     /; s/^M/🔄 Modified:  /; s/^D/❌ Deleted:   /; s/^R/🔄 Renamed:   /; s/^C/📋 Copied:    /'
 echo "------------------------------"
 echo -e "Commit message:\n$commit_message"
 echo "------------------------------"
@@ -95,4 +103,5 @@ else
     echo "❌ Commit cancelled."
 fi
 
-# Final paus
+# Final pause to see the result before returning to normal screen
+sleep 1.5
