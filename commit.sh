@@ -91,3 +91,5 @@ else
     git reset HEAD
     echo "❌ Commit cancelled."
 fi
+
+sleep 1
