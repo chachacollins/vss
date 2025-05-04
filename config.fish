@@ -2,7 +2,9 @@ set fish_greeting # Disable greeting
 # Set up paths
 # If you come from bash you might have to change your $PATH
 set -x PATH $HOME/bin /usr/local/bin $PATH $HOME/.local/bin
-# set -x PATH /nix/var/nix/profiles/default/bin $PATH
+set -gx PATH $HOME/.config/emacs/bin $PATH
+set -gx PATH ~/.emacs.d/bin $PATH
+
 
 # Load zoxide for better directory navigation
 zoxide init fish | source
@@ -16,6 +18,7 @@ alias vim="nvim"
 alias rebuild="$HOME/helper.fish"
 alias cd="z" # Use zoxide instead of cd
 alias cat="bat"
+alias emacs="emacsclient -c -nw"
 
 abbr up  "nh os switch -u"
 abbr nxd "nix develop"
