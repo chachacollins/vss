@@ -22,7 +22,6 @@ alias vim="nvim"
 alias rebuild="$HOME/helper.fish"
 alias cd="z" # Use zoxide instead of cd
 alias cat="bat"
-alias emacs="emacsclient -c -nw"
 
 abbr up  "nh os switch -u"
 abbr nxd "nix develop"
